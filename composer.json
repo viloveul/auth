@@ -1,0 +1,24 @@
+{
+    "name": "viloveul/auth",
+    "description": "Viloveul micro.",
+    "type": "framework",
+    "license": "MIT",
+    "authors": [{
+        "name": "Fajrul Akbar Zuhdi",
+        "email": "fajrulaz@gmail.com"
+    }],
+    "keywords": ["framework", "micro", "zafex", "viloveul", "fajrulaz"],
+    "minimum-stability": "dev",
+    "require": {
+        "lcobucci/jwt": "3.2.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Viloveul\\Auth\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "prefer-stable": true
+}
