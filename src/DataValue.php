@@ -2,14 +2,25 @@
 
 namespace Viloveul\Auth;
 
-use Viloveul\Auth\Contracts\Value as IValue;
+use Viloveul\Auth\Contracts\DataValue as IDataValue;
 
-class Value implements IValue
+class DataValue implements IDataValue
 {
     /**
      * @var array
      */
     protected $attributes = [];
+
+    /**
+     * @var array
+     * @see http://www.iana.org/assignments/jwt/jwt.xhtml
+     */
+    protected $values = [
+        'sub',
+        'name',
+        'email',
+        'nickname',
+    ];
 
     /**
      * @param array $attributes
@@ -32,6 +43,10 @@ class Value implements IValue
      */
     public function setAttributes(array $attributes)
     {
-        $this->attributes = $attributes;
+        foreach ($attributes as $key => $value) {
+            if (in_array($key, $this->values)) {
+                $this->attributes[$key] = $value;
+            }
+        }
     }
 }

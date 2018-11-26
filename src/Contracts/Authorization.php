@@ -2,16 +2,22 @@
 
 namespace Viloveul\Auth\Contracts;
 
-use Viloveul\Auth\Contracts\Value as IValue;
+use Viloveul\Auth\Contracts\DataValue as IDataValue;
 
-interface Token
+interface Authorization
 {
     /**
-     * @param IValue $value
+     * @param $str
+     * @param $callback
+     */
+    public function authenticate($str, callable $callback = null);
+
+    /**
+     * @param IDataValue $value
      * @param $exp
      * @param $nbf
      */
-    public function generate(IValue $value, $exp = 3600, $nbf = 60);
+    public function generate(IDataValue $value, $exp = 3600, $nbf = 60);
 
     public function getPrivateKey();
 
