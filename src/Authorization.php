@@ -43,31 +43,37 @@ class Authorization implements IAuthorization
     protected $signer = null;
 
     /**
+     * @var mixed
+     */
+    protected $token = null;
+
+    /**
      * @param $iss
      * @param $passphrase
      */
-    public function __construct($iss, $passphrase = null)
+    public function __construct($iss, $passphrase, $token = null)
     {
         $this->signer = new Sha256();
         $this->keychain = new Keychain();
         $this->iss = $iss;
         $this->passphrase = $passphrase;
+        $this->token = $token;
     }
 
     /**
      * @param $str
      * @param $callback
      */
-    public function authenticate($str, callable $callback = null)
+    public function authenticate(callable $callback = null)
     {
         $parser = new Parser();
         $data = new ValidationData();
-        $token = $parser->parse((string) $str);
+        if (is_callable($callback)) {
+            $this->token = $callback();
+        }
+        $token = $parser->parse((string) $this->token);
         $key = $this->keychain->getPublicKey("file://{$this->getPublicKey()}", $this->passphrase);
         if (true === $token->verify($this->signer, $key) && true === $token->validate($data)) {
-            if (is_callable($callback)) {
-                return $callback($token->getClaims());
-            }
             return $token->getClaims();
         }
         return false;
@@ -78,7 +84,7 @@ class Authorization implements IAuthorization
      * @param $exp
      * @param $nbf
      */
-    public function generate(IDataValue $value, $exp = 3600, $nbf = 60)
+    public function generate(IDataValue $value, $exp = 3600, $nbf = 0)
     {
         $builder = new Builder();
         $key = $this->keychain->getPrivateKey("file://{$this->getPrivateKey()}", $this->passphrase);
@@ -86,8 +92,8 @@ class Authorization implements IAuthorization
         $builder->setIssuedAt(time());
         $builder->setNotBefore(time() + $nbf);
         $builder->setExpiration(time() + $exp);
-        foreach ($value->getAttributes() as $key => $value) {
-            $builder->set($key, $value);
+        foreach ($value->getAttributes() as $name => $value) {
+            $builder->set($name, $value);
         }
         $builder->sign($this->signer, $key);
         return (string) $builder->getToken();

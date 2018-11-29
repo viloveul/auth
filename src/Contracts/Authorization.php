@@ -7,10 +7,9 @@ use Viloveul\Auth\Contracts\DataValue as IDataValue;
 interface Authorization
 {
     /**
-     * @param $str
      * @param $callback
      */
-    public function authenticate($str, callable $callback = null);
+    public function authenticate(callable $callback = null);
 
     /**
      * @param IDataValue $value
