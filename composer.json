@@ -1,5 +1,5 @@
 {
-    "name": "viloveul/auth",
+    "name": "zafex/viloveul-auth",
     "description": "Viloveul auth with jwt.",
     "type": "framework",
     "license": "MIT",
