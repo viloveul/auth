@@ -2,33 +2,37 @@
 
 namespace Viloveul\Auth\Contracts;
 
-use Viloveul\Auth\Contracts\DataValue as IDataValue;
+use Viloveul\Auth\Contracts\UserData as IUserData;
 
 interface Authorization
 {
-    /**
-     * @param $callback
-     */
-    public function authenticate(callable $callback = null);
+    public function authenticate();
 
     /**
-     * @param IDataValue $value
+     * @param IUserData $data
      * @param $exp
      * @param $nbf
      */
-    public function generate(IDataValue $value, $exp = 3600, $nbf = 60);
+    public function generate(IUserData $data, $exp = 3600, $nbf = 0);
 
     public function getPrivateKey();
 
     public function getPublicKey();
 
-    /**
-     * @param $key
-     */
-    public function setPrivateKey($key);
+    public function getToken();
 
     /**
-     * @param $key
+     * @param $privateKey
      */
-    public function setPublicKey($key);
+    public function setPrivateKey($privateKey);
+
+    /**
+     * @param $publicKey
+     */
+    public function setPublicKey($publicKey);
+
+    /**
+     * @param $token
+     */
+    public function setToken($token);
 }

@@ -2,7 +2,7 @@
 
 namespace Viloveul\Auth\Contracts;
 
-interface DataValue
+interface UserData
 {
     public function getAttributes(): array;
 

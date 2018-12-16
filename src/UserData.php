@@ -2,9 +2,9 @@
 
 namespace Viloveul\Auth;
 
-use Viloveul\Auth\Contracts\DataValue as IDataValue;
+use Viloveul\Auth\Contracts\UserData as IUserData;
 
-class DataValue implements IDataValue
+class UserData implements IUserData
 {
     /**
      * @var array

@@ -8,95 +8,97 @@ use Lcobucci\JWT\Signer\Keychain;
 use Lcobucci\JWT\Signer\Rsa\Sha256;
 use Lcobucci\JWT\ValidationData;
 use Viloveul\Auth\Contracts\Authorization as IAuthorization;
-use Viloveul\Auth\Contracts\DataValue as IDataValue;
+use Viloveul\Auth\Contracts\UserData as IUserData;
+use Viloveul\Auth\InvalidTokenException;
 
 class Authorization implements IAuthorization
 {
     /**
      * @var mixed
      */
-    protected $iss = null;
+    protected $iss;
 
     /**
      * @var mixed
      */
-    protected $keychain = null;
+    protected $keychain;
 
     /**
      * @var mixed
      */
-    protected $passphrase = null;
+    protected $privateKey;
 
     /**
      * @var mixed
      */
-    protected $privateKey = null;
+    protected $publicKey;
 
     /**
      * @var mixed
      */
-    protected $publicKey = null;
+    protected $signer;
 
     /**
      * @var mixed
      */
-    protected $signer = null;
+    protected $token;
 
     /**
-     * @var mixed
-     */
-    protected $token = null;
-
-    /**
-     * @param $iss
      * @param $passphrase
+     * @param $iss
      */
-    public function __construct($iss, $passphrase, $token = null)
+    public function __construct($passphrase, $iss = null)
     {
+        $this->passphrase = $passphrase;
+        $this->iss = $iss;
         $this->signer = new Sha256();
         $this->keychain = new Keychain();
-        $this->iss = $iss;
-        $this->passphrase = $passphrase;
-        $this->token = $token;
     }
 
     /**
-     * @param $str
-     * @param $callback
+     * @return mixed
      */
-    public function authenticate(callable $callback = null)
+    public function authenticate()
     {
         $parser = new Parser();
         $data = new ValidationData();
-        if (is_callable($callback)) {
-            $this->token = $callback();
-        }
-        $token = $parser->parse((string) $this->token);
-        $key = $this->keychain->getPublicKey("file://{$this->getPublicKey()}", $this->passphrase);
-        if (true === $token->verify($this->signer, $key) && true === $token->validate($data)) {
-            return $token->getClaims();
+        try {
+            $parsedToken = $parser->parse($this->getToken());
+            $key = $this->keychain->getPublicKey("file://{$this->getPublicKey()}", $this->passphrase);
+            if (true === $parsedToken->verify($this->signer, $key) && true === $parsedToken->validate($data)) {
+                return $parsedToken->getClaims();
+            }
+        } catch (Exception $e) {
+            if ($e instanceof InvalidArgumentException || $e instanceof RuntimeException) {
+                throw new InvalidTokenException('Invalid token.');
+            } else {
+                throw $e;
+            }
         }
         return false;
     }
 
     /**
-     * @param $sub
+     * @param IUserData $data
      * @param $exp
      * @param $nbf
      */
-    public function generate(IDataValue $value, $exp = 3600, $nbf = 0)
+    public function generate(IUserData $data, $exp = 3600, $nbf = 0)
     {
         $builder = new Builder();
-        $key = $this->keychain->getPrivateKey("file://{$this->getPrivateKey()}", $this->passphrase);
-        $builder->setIssuer($this->iss);
-        $builder->setIssuedAt(time());
-        $builder->setNotBefore(time() + $nbf);
-        $builder->setExpiration(time() + $exp);
-        foreach ($value->getAttributes() as $name => $value) {
-            $builder->set($name, $value);
+        $signkey = $this->keychain->getPrivateKey("file://{$this->getPrivateKey()}", $this->passphrase);
+        if ($this->iss) {
+            $builder->setIssuer($this->iss);
         }
-        $builder->sign($this->signer, $key);
-        return (string) $builder->getToken();
+        $builder->setExpiration(time() + $exp);
+        $builder->setNotBefore(time() + $nbf);
+        $builder->setIssuedAt(time());
+        foreach ($data->getAttributes() as $key => $value) {
+            $builder->set($key, $value);
+        }
+        $builder->sign($this->signer, $signkey);
+        $token = $builder->getToken();
+        return (string) $token;
     }
 
     /**
@@ -116,18 +118,34 @@ class Authorization implements IAuthorization
     }
 
     /**
-     * @param $key
+     * @return mixed
      */
-    public function setPrivateKey($key)
+    public function getToken()
     {
-        $this->privateKey = $key;
+        return $this->token;
     }
 
     /**
-     * @param $key
+     * @param $priv
      */
-    public function setPublicKey($key)
+    public function setPrivateKey($privateKey)
     {
-        $this->publicKey = $key;
+        $this->privateKey = $privateKey;
+    }
+
+    /**
+     * @param $publicKey
+     */
+    public function setPublicKey($publicKey)
+    {
+        $this->publicKey = $publicKey;
+    }
+
+    /**
+     * @param $token
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
     }
 }
