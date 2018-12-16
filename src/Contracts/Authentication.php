@@ -4,7 +4,7 @@ namespace Viloveul\Auth\Contracts;
 
 use Viloveul\Auth\Contracts\UserData as IUserData;
 
-interface Authorization
+interface Authentication
 {
     public function authenticate();
 

@@ -7,11 +7,11 @@ use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer\Keychain;
 use Lcobucci\JWT\Signer\Rsa\Sha256;
 use Lcobucci\JWT\ValidationData;
-use Viloveul\Auth\Contracts\Authorization as IAuthorization;
+use Viloveul\Auth\Contracts\Authentication as IAuthentication;
 use Viloveul\Auth\Contracts\UserData as IUserData;
 use Viloveul\Auth\InvalidTokenException;
 
-class Authorization implements IAuthorization
+class Authentication implements IAuthentication
 {
     /**
      * @var mixed
