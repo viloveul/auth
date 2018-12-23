@@ -1,13 +1,13 @@
 {
-    "name": "zafex/viloveul-auth",
+    "name": "viloveul/auth",
     "description": "Viloveul auth with jwt.",
-    "type": "framework",
+    "type": "component",
     "license": "MIT",
     "authors": [{
         "name": "Fajrul Akbar Zuhdi",
         "email": "fajrulaz@gmail.com"
     }],
-    "keywords": ["framework", "micro", "zafex", "viloveul", "fajrulaz", "auth"],
+    "keywords": ["component", "zafex", "viloveul", "fajrulaz", "auth"],
     "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
