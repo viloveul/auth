@@ -13,6 +13,13 @@ class UserData implements IUserData
 
     /**
      * @var array
+     */
+    protected $maps = [
+        'id' => 'sub',
+    ];
+
+    /**
+     * @var array
      * @see http://www.iana.org/assignments/jwt/jwt.xhtml
      */
     protected $values = [
@@ -46,6 +53,8 @@ class UserData implements IUserData
         foreach ($attributes as $key => $value) {
             if (in_array($key, $this->values)) {
                 $this->attributes[$key] = $value;
+            } elseif (array_key_exists($key, $this->maps)) {
+                $this->attributes[$this->maps[$key]] = $value;
             }
         }
     }
