@@ -2,11 +2,14 @@
 
 namespace Viloveul\Auth;
 
+use Exception;
+use InvalidArgumentException;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer\Keychain;
 use Lcobucci\JWT\Signer\Rsa\Sha256;
 use Lcobucci\JWT\ValidationData;
+use RuntimeException;
 use Viloveul\Auth\Contracts\Authentication as IAuthentication;
 use Viloveul\Auth\Contracts\UserData as IUserData;
 use Viloveul\Auth\InvalidTokenException;
@@ -22,6 +25,11 @@ class Authentication implements IAuthentication
      * @var mixed
      */
     protected $keychain;
+
+    /**
+     * @var mixed
+     */
+    protected $passphrase;
 
     /**
      * @var mixed
