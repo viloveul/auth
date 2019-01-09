@@ -79,7 +79,6 @@ class Authentication implements IAuthentication
                     foreach ($claims as $claim) {
                         $user->set($claim->getName(), $claim->getValue());
                     }
-                    return $user;
                 } else {
                     throw new Exception("Cannot Parse Token.");
                 }
@@ -91,6 +90,7 @@ class Authentication implements IAuthentication
                 throw $e;
             }
         }
+        return $user;
     }
 
     /**
