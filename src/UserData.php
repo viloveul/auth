@@ -46,9 +46,22 @@ class UserData implements IUserData
     }
 
     /**
+     * @param array $maps
+     */
+    public function remap(array $maps): void
+    {
+        $this->maps = [];
+        foreach ($maps as $key => $value) {
+            if (in_array($value, $this->values)) {
+                $this->maps[$key] = $value;
+            }
+        }
+    }
+
+    /**
      * @param array $attributes
      */
-    public function setAttributes(array $attributes)
+    public function setAttributes(array $attributes): void
     {
         foreach ($attributes as $key => $value) {
             if (in_array($key, $this->values)) {
