@@ -38,6 +38,15 @@ class UserData implements IUserData
     }
 
     /**
+     * @param string     $name
+     * @param $default
+     */
+    public function get(string $name, $default = null)
+    {
+        return array_key_exists($name, $this->attributes) ? $this->attributes[$name] : $default;
+    }
+
+    /**
      * @return mixed
      */
     public function getAttributes(): array
@@ -55,6 +64,19 @@ class UserData implements IUserData
             if (in_array($value, $this->values)) {
                 $this->maps[$key] = $value;
             }
+        }
+    }
+
+    /**
+     * @param string   $name
+     * @param $value
+     */
+    public function set(string $name, $value = null): void
+    {
+        if (in_array($name, $this->values)) {
+            $this->attributes[$name] = $value;
+        } elseif (array_key_exists($name, $this->maps)) {
+            $this->attributes[$this->maps[$name]] = $value;
         }
     }
 

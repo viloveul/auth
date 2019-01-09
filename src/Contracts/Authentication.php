@@ -6,7 +6,10 @@ use Viloveul\Auth\Contracts\UserData as IUserData;
 
 interface Authentication
 {
-    public function authenticate();
+    /**
+     * @param IUserData $user
+     */
+    public function authenticate(IUserData $user): IUserData;
 
     /**
      * @param IUserData $data
@@ -24,15 +27,15 @@ interface Authentication
     /**
      * @param $privateKey
      */
-    public function setPrivateKey($privateKey);
+    public function setPrivateKey($privateKey): void;
 
     /**
      * @param $publicKey
      */
-    public function setPublicKey($publicKey);
+    public function setPublicKey($publicKey): void;
 
     /**
      * @param $token
      */
-    public function setToken($token);
+    public function setToken($token): void;
 }
