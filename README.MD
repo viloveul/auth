@@ -40,6 +40,7 @@ var_dump($token);
 
 // check token
 $auth->setToken($token);
-var_dump($auth->authenticate());
+$user = $auth->authenticate(new Viloveul\Auth\UserData);
+var_dump($user);
 
 ```

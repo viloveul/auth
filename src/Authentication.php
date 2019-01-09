@@ -13,6 +13,7 @@ use RuntimeException;
 use Viloveul\Auth\Contracts\Authentication as IAuthentication;
 use Viloveul\Auth\Contracts\UserData as IUserData;
 use Viloveul\Auth\InvalidTokenException;
+use Viloveul\Auth\UserData;
 
 class Authentication implements IAuthentication
 {
@@ -66,15 +67,22 @@ class Authentication implements IAuthentication
     /**
      * @return mixed
      */
-    public function authenticate()
+    public function authenticate(IUserData $user): IUserData
     {
-        $parser = new Parser();
-        $data = new ValidationData();
         try {
+            $parser = new Parser();
+            $data = new ValidationData();
             $parsedToken = $parser->parse($this->getToken());
             $key = $this->keychain->getPublicKey("file://{$this->getPublicKey()}", $this->passphrase);
             if (true === $parsedToken->verify($this->signer, $key) && true === $parsedToken->validate($data)) {
-                return $parsedToken->getClaims();
+                if ($claims = $parsedToken->getClaims()) {
+                    foreach ($claims as $claim) {
+                        $user->set($claim->getName(), $claim->getValue());
+                    }
+                    return $user;
+                } else {
+                    throw new Exception("Cannot Parse Token.");
+                }
             }
         } catch (Exception $e) {
             if ($e instanceof InvalidArgumentException || $e instanceof RuntimeException) {
@@ -83,7 +91,6 @@ class Authentication implements IAuthentication
                 throw $e;
             }
         }
-        return false;
     }
 
     /**
@@ -136,7 +143,7 @@ class Authentication implements IAuthentication
     /**
      * @param $priv
      */
-    public function setPrivateKey($privateKey)
+    public function setPrivateKey($privateKey): void
     {
         $this->privateKey = $privateKey;
     }
@@ -144,7 +151,7 @@ class Authentication implements IAuthentication
     /**
      * @param $publicKey
      */
-    public function setPublicKey($publicKey)
+    public function setPublicKey($publicKey): void
     {
         $this->publicKey = $publicKey;
     }
@@ -152,7 +159,7 @@ class Authentication implements IAuthentication
     /**
      * @param $token
      */
-    public function setToken($token)
+    public function setToken($token): void
     {
         $this->token = $token;
     }
