@@ -1,22 +1,19 @@
 {
     "name": "viloveul/auth",
     "description": "Viloveul auth with jwt.",
-    "type": "component",
+    "type": "library",
     "license": "MIT",
+    "keywords": ["zafex", "viloveul", "fajrulaz", "auth", "component", "library"],
+    "homepage": "http://www.viloveul.com",
+    "readme": "README.MD",
     "authors": [{
         "name": "Fajrul Akbar Zuhdi",
         "email": "fajrulaz@gmail.com"
     }],
-    "keywords": ["component", "zafex", "viloveul", "fajrulaz", "auth"],
     "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
         "sort-packages": true
-    },
-    "autoload": {
-        "psr-4": {
-            "Viloveul\\Auth\\": "src/"
-        }
     },
     "scripts": {
         "genrsakey": [
@@ -24,6 +21,11 @@
             "openssl genrsa -out config/private.pem -aes256 4096",
             "openssl rsa -pubout -in config/private.pem -out config/public.pem"
         ]
+    },
+    "autoload": {
+        "psr-4": {
+            "Viloveul\\Auth\\": "src/"
+        }
     },
     "require": {
         "php": "~7.0",

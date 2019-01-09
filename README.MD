@@ -16,11 +16,15 @@ $ openssl genrsa -out private.pem -aes256 4096
 $ openssl rsa -pubout -in private.pem -out public.pem
 ```
 
+add this
+
 ```php
 require __DIR__ . '/vendor/autoload.php';
 
 $auth = new Viloveul\Auth\Authentication($your_phrase);
+
 $auth->setPrivateKey('private.pem');
+
 $auth->setPublicKey('public.pem');
 
 // create user data
@@ -29,12 +33,13 @@ $data = new Viloveul\Auth\UserData([
 	'name' => 'Viloveul',
 	'email' => 'me@viloveul.com'
 ]);
+
 // get token
 $token = $auth->generate($data);
 var_dump($token);
 
 // check token
-$auth->setToken('your token');
+$auth->setToken($token);
 var_dump($auth->authenticate());
 
 ```
