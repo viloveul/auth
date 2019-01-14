@@ -16,26 +16,28 @@ interface Authentication
      * @param $exp
      * @param $nbf
      */
-    public function generate(IUserData $data, $exp = 3600, $nbf = 0);
+    public function generate(IUserData $data, $exp = 3600, $nbf = 0): string;
 
-    public function getPrivateKey();
+    public function getPrivateKey(): string;
 
-    public function getPublicKey();
+    public function getPublicKey(): string;
 
-    public function getToken();
+    public function getToken(): string;
 
     /**
      * @param $privateKey
      */
-    public function setPrivateKey($privateKey): void;
+    public function setPrivateKey(string $privateKey): void;
 
     /**
      * @param $publicKey
      */
-    public function setPublicKey($publicKey): void;
+    public function setPublicKey(string $publicKey): void;
 
     /**
      * @param $token
      */
-    public function setToken($token): void;
+    public function setToken(string $token): void;
+
+    public function withToken(string $token): self;
 }
