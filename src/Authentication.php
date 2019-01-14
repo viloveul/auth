@@ -30,17 +30,17 @@ class Authentication implements IAuthentication
     /**
      * @var mixed
      */
-    protected $passphrase;
+    protected $passphrase = '';
 
     /**
      * @var mixed
      */
-    protected $privateKey;
+    protected $privateKey = '';
 
     /**
      * @var mixed
      */
-    protected $publicKey;
+    protected $publicKey = '';
 
     /**
      * @var mixed
@@ -50,7 +50,7 @@ class Authentication implements IAuthentication
     /**
      * @var mixed
      */
-    protected $token;
+    protected $token = '';
 
     /**
      * @param $passphrase
@@ -98,7 +98,7 @@ class Authentication implements IAuthentication
      * @param $exp
      * @param $nbf
      */
-    public function generate(IUserData $data, $exp = 3600, $nbf = 0)
+    public function generate(IUserData $data, $exp = 3600, $nbf = 0): string
     {
         $builder = new Builder();
         $signkey = $this->keychain->getPrivateKey("file://{$this->getPrivateKey()}", $this->passphrase);
@@ -119,7 +119,7 @@ class Authentication implements IAuthentication
     /**
      * @return mixed
      */
-    public function getPrivateKey()
+    public function getPrivateKey(): string
     {
         return $this->privateKey;
     }
@@ -127,7 +127,7 @@ class Authentication implements IAuthentication
     /**
      * @return mixed
      */
-    public function getPublicKey()
+    public function getPublicKey(): string
     {
         return $this->publicKey;
     }
@@ -135,7 +135,7 @@ class Authentication implements IAuthentication
     /**
      * @return mixed
      */
-    public function getToken()
+    public function getToken(): string
     {
         return $this->token;
     }
@@ -143,7 +143,7 @@ class Authentication implements IAuthentication
     /**
      * @param $priv
      */
-    public function setPrivateKey($privateKey): void
+    public function setPrivateKey(string $privateKey): void
     {
         $this->privateKey = $privateKey;
     }
@@ -151,7 +151,7 @@ class Authentication implements IAuthentication
     /**
      * @param $publicKey
      */
-    public function setPublicKey($publicKey): void
+    public function setPublicKey(string $publicKey): void
     {
         $this->publicKey = $publicKey;
     }
@@ -159,8 +159,19 @@ class Authentication implements IAuthentication
     /**
      * @param $token
      */
-    public function setToken($token): void
+    public function setToken(string $token): void
     {
         $this->token = $token;
+    }
+
+    /**
+     * @param  $token
+     * @return mixed
+     */
+    public function withToken(string $token): IAuthentication
+    {
+        $auth = clone $this;
+        $auth->setToken($token);
+        return $auth;
     }
 }
