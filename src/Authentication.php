@@ -73,15 +73,16 @@ class Authentication implements IAuthentication
             $parser = new Parser();
             $data = new ValidationData();
             $parsedToken = $parser->parse($this->getToken());
-            $key = $this->keychain->getPublicKey("file://{$this->getPublicKey()}", $this->passphrase);
-            if (true === $parsedToken->verify($this->signer, $key) && true === $parsedToken->validate($data)) {
-                if ($claims = $parsedToken->getClaims()) {
-                    foreach ($claims as $claim) {
-                        $user->set($claim->getName(), $claim->getValue());
-                    }
-                } else {
-                    throw new Exception("Cannot Parse Token.");
-                }
+            $key = $this->keychain->getPublicKey("file://{$this->getPublicKey()}");
+            if ($parsedToken->verify($this->signer, $key) !== true) {
+                throw new Exception("The token cannot be verified.");
+            }
+            if ($parsedToken->validate($data) !== true) {
+                throw new Exception("The token cannot be validated.");
+            }
+            $claims = $parsedToken->getClaims();
+            foreach ($claims as $claim) {
+                $user->set($claim->getName(), $claim->getValue());
             }
         } catch (Exception $e) {
             if ($e instanceof InvalidArgumentException || $e instanceof RuntimeException) {

@@ -27,6 +27,10 @@ class UserData implements IUserData
         'name',
         'email',
         'nickname',
+        'iss',
+        'exp',
+        'nbf',
+        'iat',
     ];
 
     /**
