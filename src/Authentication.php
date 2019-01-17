@@ -65,10 +65,13 @@ class Authentication implements IAuthentication
     }
 
     /**
-     * @return mixed
+     * @param IUserData $user
      */
-    public function authenticate(IUserData $user): IUserData
+    public function authenticate(IUserData $user = null): IUserData
     {
+        if (is_null($user)) {
+            $user = new UserData();
+        }
         try {
             $parser = new Parser();
             $data = new ValidationData();
