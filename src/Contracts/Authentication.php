@@ -2,21 +2,21 @@
 
 namespace Viloveul\Auth\Contracts;
 
-use Viloveul\Auth\Contracts\UserData as IUserData;
+use Viloveul\Auth\Contracts\UserData;
 
 interface Authentication
 {
     /**
-     * @param IUserData $user
+     * @param UserData $user
      */
-    public function authenticate(IUserData $user): IUserData;
+    public function authenticate(UserData $user): void;
 
     /**
-     * @param IUserData $data
+     * @param UserData $data
      * @param $exp
      * @param $nbf
      */
-    public function generate(IUserData $data, $exp = 3600, $nbf = 0): string;
+    public function generate(UserData $data, $exp = 3600, $nbf = 0): string;
 
     public function getPrivateKey(): string;
 
@@ -24,20 +24,30 @@ interface Authentication
 
     public function getToken(): string;
 
+    public function getUser(): UserData;
+
     /**
-     * @param $privateKey
+     * @param string $privateKey
      */
     public function setPrivateKey(string $privateKey): void;
 
     /**
-     * @param $publicKey
+     * @param string $publicKey
      */
     public function setPublicKey(string $publicKey): void;
 
     /**
-     * @param $token
+     * @param string $token
      */
     public function setToken(string $token): void;
 
+    /**
+     * @param UserData $user
+     */
+    public function setUser(UserData $user): void;
+
+    /**
+     * @param string $token
+     */
     public function withToken(string $token): self;
 }
