@@ -53,6 +53,11 @@ class Authentication implements IAuthentication
     protected $token = '';
 
     /**
+     * @var mixed
+     */
+    protected $user;
+
+    /**
      * @param $passphrase
      * @param $iss
      */
@@ -67,11 +72,8 @@ class Authentication implements IAuthentication
     /**
      * @param IUserData $user
      */
-    public function authenticate(IUserData $user = null): IUserData
+    public function authenticate(IUserData $user = null): void
     {
-        if (is_null($user)) {
-            $user = new UserData();
-        }
         try {
             $parser = new Parser();
             $data = new ValidationData();
@@ -84,17 +86,20 @@ class Authentication implements IAuthentication
                 throw new Exception("The token cannot be validated.");
             }
             $claims = $parsedToken->getClaims();
+            if (is_null($user)) {
+                $user = new UserData();
+            }
             foreach ($claims as $claim) {
                 $user->set($claim->getName(), $claim->getValue());
             }
+            $this->setUser($user);
         } catch (Exception $e) {
             if ($e instanceof InvalidArgumentException || $e instanceof RuntimeException) {
-                throw new InvalidTokenException('Invalid token.');
+                throw new InvalidTokenException($e->getMessage());
             } else {
                 throw $e;
             }
         }
-        return $user;
     }
 
     /**
@@ -145,6 +150,17 @@ class Authentication implements IAuthentication
     }
 
     /**
+     * @return mixed
+     */
+    public function getUser(): IUserData
+    {
+        if ($this->user instanceof IUserData) {
+            return $this->user;
+        }
+        return new UserData();
+    }
+
+    /**
      * @param $priv
      */
     public function setPrivateKey(string $privateKey): void
@@ -166,6 +182,14 @@ class Authentication implements IAuthentication
     public function setToken(string $token): void
     {
         $this->token = $token;
+    }
+
+    /**
+     * @param IUserData $user
+     */
+    public function setUser(IUserData $user): void
+    {
+        $this->user = $user;
     }
 
     /**

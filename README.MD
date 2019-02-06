@@ -40,7 +40,7 @@ var_dump($token);
 
 // check token
 $auth->setToken($token);
-$user = $auth->authenticate();
-var_dump($user);
+$auth->authenticate();
+var_dump($auth->getUser());
 
 ```
