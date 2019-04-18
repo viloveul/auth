@@ -13,10 +13,10 @@ interface Authentication
 
     /**
      * @param UserData $data
-     * @param $exp
-     * @param $nbf
+     * @param int      $exp
+     * @param int      $nbf
      */
-    public function generate(UserData $data, $exp = 3600, $nbf = 0): string;
+    public function generate(UserData $data, int $exp, int $nbf): string;
 
     public function getPrivateKey(): string;
 

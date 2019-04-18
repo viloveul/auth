@@ -47,6 +47,9 @@ class UserData implements IUserData
      */
     public function get(string $name, $default = null)
     {
+        if (array_key_exists($name, $this->maps)) {
+            $key = $this->maps[$name];
+        }
         return array_key_exists($name, $this->attributes) ? $this->attributes[$name] : $default;
     }
 
@@ -90,11 +93,7 @@ class UserData implements IUserData
     public function setAttributes(array $attributes): void
     {
         foreach ($attributes as $key => $value) {
-            if (in_array($key, $this->values)) {
-                $this->attributes[$key] = $value;
-            } elseif (array_key_exists($key, $this->maps)) {
-                $this->attributes[$this->maps[$key]] = $value;
-            }
+            $this->set($key, $value);
         }
     }
 }
