@@ -3,17 +3,17 @@
 namespace Viloveul\Auth;
 
 use Exception;
-use InvalidArgumentException;
-use Lcobucci\JWT\Builder;
+use RuntimeException;
 use Lcobucci\JWT\Parser;
+use Lcobucci\JWT\Builder;
+use Viloveul\Auth\UserData;
+use InvalidArgumentException;
+use Lcobucci\JWT\ValidationData;
 use Lcobucci\JWT\Signer\Keychain;
 use Lcobucci\JWT\Signer\Rsa\Sha256;
-use Lcobucci\JWT\ValidationData;
-use RuntimeException;
-use Viloveul\Auth\Contracts\Authentication as IAuthentication;
-use Viloveul\Auth\Contracts\UserData as IUserData;
 use Viloveul\Auth\InvalidTokenException;
-use Viloveul\Auth\UserData;
+use Viloveul\Auth\Contracts\UserData as IUserData;
+use Viloveul\Auth\Contracts\Authentication as IAuthentication;
 
 class Authentication implements IAuthentication
 {
@@ -30,7 +30,7 @@ class Authentication implements IAuthentication
     /**
      * @var mixed
      */
-    protected $passphrase = '';
+    protected $phrase = '';
 
     /**
      * @var mixed
@@ -58,12 +58,12 @@ class Authentication implements IAuthentication
     protected $user;
 
     /**
-     * @param $passphrase
+     * @param string $phrase
      * @param $iss
      */
-    public function __construct($passphrase, $iss = null)
+    public function __construct(string $phrase, $iss = null)
     {
-        $this->passphrase = $passphrase;
+        $this->phrase = $phrase;
         $this->iss = $iss;
         $this->signer = new Sha256();
         $this->keychain = new Keychain();
@@ -86,7 +86,7 @@ class Authentication implements IAuthentication
                 throw new Exception("The token cannot be validated.");
             }
             $claims = $parsedToken->getClaims();
-            if (is_null($user)) {
+            if (null === $user) {
                 $user = new UserData();
             }
             foreach ($claims as $claim) {
@@ -104,13 +104,13 @@ class Authentication implements IAuthentication
 
     /**
      * @param IUserData $data
-     * @param $exp
-     * @param $nbf
+     * @param int       $exp
+     * @param int       $nbf
      */
-    public function generate(IUserData $data, $exp = 3600, $nbf = 0): string
+    public function generate(IUserData $data, int $exp = 3600, int $nbf = 0): string
     {
         $builder = new Builder();
-        $signkey = $this->keychain->getPrivateKey("file://{$this->getPrivateKey()}", $this->passphrase);
+        $signkey = $this->keychain->getPrivateKey("file://{$this->getPrivateKey()}", $this->phrase);
         if ($this->iss) {
             $builder->setIssuer($this->iss);
         }

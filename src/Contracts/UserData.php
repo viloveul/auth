@@ -8,7 +8,7 @@ interface UserData
      * @param string     $name
      * @param $default
      */
-    public function get(string $name, $default = null);
+    public function get(string $name, $default);
 
     public function getAttributes(): array;
 
@@ -21,7 +21,7 @@ interface UserData
      * @param string   $name
      * @param $value
      */
-    public function set(string $name, $value = null): void;
+    public function set(string $name, $value): void;
 
     /**
      * @param array $attributes
